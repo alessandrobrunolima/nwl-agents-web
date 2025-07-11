@@ -46,7 +46,7 @@ export function Room() {
         </div>
 
         <QuestionList roomId={params.roomId} />
-        
+
       </div>
     </div>
   )

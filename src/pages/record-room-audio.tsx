@@ -31,7 +31,7 @@ export function RecordRoomAudio() {
       recorder.current.stop();
     }
 
-    if(intervalRef.current){
+    if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
   }
@@ -51,7 +51,7 @@ export function RecordRoomAudio() {
   }
 
   function createRecorder(audio: MediaStream) {
-    
+
     recorder.current = new MediaRecorder(audio, {
       mimeType: 'audio/webm',
       audioBitsPerSecond: 64_000
@@ -92,9 +92,9 @@ export function RecordRoomAudio() {
     });
 
     createRecorder(audio);
-   
 
-    intervalRef.current = setInterval(() =>{
+
+    intervalRef.current = setInterval(() => {
       recorder.current?.stop();
 
       createRecorder(audio);

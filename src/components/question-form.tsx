@@ -36,9 +36,9 @@ interface QuestionFormProps {
 }
 
 export function QuestionForm({ roomId }: QuestionFormProps) {
-  
+
   const { mutateAsync: createQuestion } = useCreateQuestion(roomId);
-  
+
   const form = useForm<CreateQuestionFormData>({
     resolver: zodResolver(createQuestionSchema),
     defaultValues: {
@@ -51,7 +51,7 @@ export function QuestionForm({ roomId }: QuestionFormProps) {
     form.reset();
   }
 
-  const {isSubmitting} = form.formState;
+  const { isSubmitting } = form.formState;
 
   return (
     <Card>

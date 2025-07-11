@@ -24,7 +24,7 @@ export function useCreateQuestion(roomId: string) {
       const result: CreateQuestionResponse = await response.json();
       return result;
     },
-    onMutate({question}){
+    onMutate({ question }) {
 
       const questions = queryClient.getQueryData<GetRoomQuestionsResponse>(['get-room-questions', roomId]);
       const questionsArray = questions ?? [];
@@ -38,26 +38,26 @@ export function useCreateQuestion(roomId: string) {
       }
 
       queryClient.setQueryData<GetRoomQuestionsResponse>(['get-room-questions', roomId], [
-        newQuestion, 
+        newQuestion,
         ...questionsArray
       ]);
 
-      return {newQuestion, questions}
+      return { newQuestion, questions }
 
     },
-    onSuccess(data, _variables, context){
-      queryClient.setQueryData<GetRoomQuestionsResponse>(['get-room-questions', roomId], 
+    onSuccess(data, _variables, context) {
+      queryClient.setQueryData<GetRoomQuestionsResponse>(['get-room-questions', roomId],
         questions => {
-          if(!questions){
+          if (!questions) {
             return questions;
           }
 
-          if(!context.newQuestion){
+          if (!context.newQuestion) {
             return questions;
           }
 
           return questions.map(question => {
-            if(question.id === context.newQuestion.id){
+            if (question.id === context.newQuestion.id) {
               return {
                 ...context.newQuestion,
                 id: data.questionId,
@@ -72,11 +72,11 @@ export function useCreateQuestion(roomId: string) {
         }
       );
     },
-    onError(_error, _variables, context){
-      if(context?.questions){
+    onError(_error, _variables, context) {
+      if (context?.questions) {
         queryClient.setQueryData<GetRoomQuestionsResponse>(['get-room-questions', roomId], context.questions);
       }
-      
+
     }
     // onSuccess: () => {
     //   queryClient.invalidateQueries({ queryKey: ['get-room-questions', roomId] });
