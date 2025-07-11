@@ -1,12 +1,11 @@
-import { useRoomQuestions } from "@/http/use-room-questions";
-import { QuestionItem } from "@/components/question-item";
+import { QuestionItem } from '@/components/question-item';
+import { useRoomQuestions } from '@/http/use-room-questions';
 
 interface QuestionListProps {
   roomId: string;
 }
 
 export function QuestionList(props: QuestionListProps) {
-
   const { data } = useRoomQuestions(props.roomId);
 
   return (
@@ -18,13 +17,8 @@ export function QuestionList(props: QuestionListProps) {
       </div>
 
       {data?.map((question) => {
-        return (
-          <QuestionItem
-            key={question.id}
-            question={question}
-          />
-        )
+        return <QuestionItem key={question.id} question={question} />;
       })}
     </div>
-  )
+  );
 }

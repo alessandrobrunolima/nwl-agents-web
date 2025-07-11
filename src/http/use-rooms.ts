@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 
 type GetRoomsResponse = Array<{
   id: string;
@@ -17,6 +17,6 @@ export function useRooms() {
       }
       const result: GetRoomsResponse = await response.json();
       return result;
-    }
+    },
   });
 }

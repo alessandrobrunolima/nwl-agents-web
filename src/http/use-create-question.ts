@@ -1,5 +1,5 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { GetRoomQuestionsResponse } from "./use-room-questions";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { GetRoomQuestionsResponse } from './use-room-questions';
 
 type CreateQuestionRequest = {
   question: string;
@@ -14,19 +14,24 @@ export function useCreateQuestion(roomId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (data: CreateQuestionRequest) => {
-      const response = await fetch(`http://localhost:3333/rooms/${roomId}/questions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `http://localhost:3333/rooms/${roomId}/questions`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        }
+      );
       const result: CreateQuestionResponse = await response.json();
       return result;
     },
     onMutate({ question }) {
-
-      const questions = queryClient.getQueryData<GetRoomQuestionsResponse>(['get-room-questions', roomId]);
+      const questions = queryClient.getQueryData<GetRoomQuestionsResponse>([
+        'get-room-questions',
+        roomId,
+      ]);
       const questionsArray = questions ?? [];
 
       const newQuestion = {
@@ -34,20 +39,20 @@ export function useCreateQuestion(roomId: string) {
         question,
         answer: null,
         createdAt: new Date().toISOString(),
-        isGeneratingAnswer: true
-      }
+        isGeneratingAnswer: true,
+      };
 
-      queryClient.setQueryData<GetRoomQuestionsResponse>(['get-room-questions', roomId], [
-        newQuestion,
-        ...questionsArray
-      ]);
+      queryClient.setQueryData<GetRoomQuestionsResponse>(
+        ['get-room-questions', roomId],
+        [newQuestion, ...questionsArray]
+      );
 
-      return { newQuestion, questions }
-
+      return { newQuestion, questions };
     },
     onSuccess(data, _variables, context) {
-      queryClient.setQueryData<GetRoomQuestionsResponse>(['get-room-questions', roomId],
-        questions => {
+      queryClient.setQueryData<GetRoomQuestionsResponse>(
+        ['get-room-questions', roomId],
+        (questions) => {
           if (!questions) {
             return questions;
           }
@@ -56,28 +61,29 @@ export function useCreateQuestion(roomId: string) {
             return questions;
           }
 
-          return questions.map(question => {
+          return questions.map((question) => {
             if (question.id === context.newQuestion.id) {
               return {
                 ...context.newQuestion,
                 id: data.questionId,
                 answer: data.answer,
-                isGeneratingAnswer: false
-              }
+                isGeneratingAnswer: false,
+              };
             }
 
             return question;
           });
-
         }
       );
     },
     onError(_error, _variables, context) {
       if (context?.questions) {
-        queryClient.setQueryData<GetRoomQuestionsResponse>(['get-room-questions', roomId], context.questions);
+        queryClient.setQueryData<GetRoomQuestionsResponse>(
+          ['get-room-questions', roomId],
+          context.questions
+        );
       }
-
-    }
+    },
     // onSuccess: () => {
     //   queryClient.invalidateQueries({ queryKey: ['get-room-questions', roomId] });
     // }
